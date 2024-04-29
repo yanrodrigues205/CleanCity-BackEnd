@@ -20,16 +20,27 @@ model Users{
   password          String
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
-  point             Point[]
+  Users             CollectUser? @relation(fields: [collectUser_id], references: [id])
+  collectUser_id    String?
+
+}
+
+model CollectUser{
+  id                String @id @default(uuid())
+  name              String
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+  users             Users[]
+  CollectPoint      CollectPoint? @relation(fields: [collectPoint_id], references: [id])
+  collectPoint_id    String?
 }
 
 
-model Point{
+model CollectPoint{
   id                String @id  @default(uuid())
   name              String
   description       String
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
-  Users             Users? @relation(fields: [user_id], references: [id])
-  user_id           String?
+  collectUser       CollectUser[]
 }
