@@ -20,9 +20,9 @@ model Users{
   password          String
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
-  Users             CollectUser? @relation(fields: [collectUser_id], references: [id])
+  CollectUser       CollectUser? @relation(fields: [collectUser_id], references: [id])
   collectUser_id    String?
-
+  Sessions          Sessions[]
 }
 
 model CollectUser{
@@ -32,7 +32,7 @@ model CollectUser{
   updated_at        DateTime @updatedAt
   users             Users[]
   CollectPoint      CollectPoint? @relation(fields: [collectPoint_id], references: [id])
-  collectPoint_id    String?
+  collectPoint_id   String?
 }
 
 
@@ -43,4 +43,15 @@ model CollectPoint{
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
   collectUser       CollectUser[]
+}
+
+
+model Sessions{
+  id                String @id  @default(uuid())
+  token             String
+  expiry            DateTime  
+  Users             Users? @relation(fields: [user_id], references: [id])
+  user_id           String?
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
 }
