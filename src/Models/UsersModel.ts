@@ -55,4 +55,29 @@ export default class UsersModel
             return false;
         }
     }
+
+    protected async updateCollectUser(collectUser_id: string, user_id: string)
+    {
+        try
+        {
+            const update = await database.users.update({
+                where:{
+                    id: user_id
+                },
+                data:{
+                    collectUser_id
+                }
+            });
+
+            if(update)
+                return true;
+            else
+                return false;
+        }
+        catch(err)
+        {
+            console.error(err);
+            return false;
+        }
+    }
 }
