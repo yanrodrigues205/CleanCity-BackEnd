@@ -11,21 +11,30 @@ export default class SessionsModel
 
     protected async insert(users: any)
     {
-        try
-        {
+       
             const dataExpiracao = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
-            const SECURITY_KEY = String(process.env.CRYPT_KEY);
+           
+            let SECURITY_KEY :string = String(process.env.SECURITY_KEY);
 
-            if(!SECURITY_KEY)
+            if(SECURITY_KEY.length == 0 || !SECURITY_KEY)
             {
-                throw new Error("Chave de segurança da API inexistente!");
+                console.error("Chave de segurança da API inexistente!");
             }
 
 
-            const create_token = await sign(users, SECURITY_KEY, {
-                algorithm: "HS256", 
-                expiresIn: "24h"
-            });
+            let create_token;
+            try
+            {
+                create_token = await sign(users, SECURITY_KEY, {
+                    algorithm: "HS256",
+                    expiresIn: "24h"
+                });
+            }
+            catch(err)
+            {
+                console.error(err);
+                return false;
+            }
 
             const insert = await database.sessions.create({
                 data:{
@@ -39,12 +48,6 @@ export default class SessionsModel
                 return create_token;
             else
                 return false;
-        }
-        catch(err)
-        {
-            console.error(err);
-            return false;
-        }
     }
 
     protected async verifyEmail(email: string)
