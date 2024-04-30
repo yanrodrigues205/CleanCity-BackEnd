@@ -28,11 +28,13 @@ model Users{
 model CollectUser{
   id                String @id @default(uuid())
   name              String
+  cfpCnpj           String   @unique
+  phone             String
+  description       String
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
   users             Users[]
-  CollectPoint      CollectPoint? @relation(fields: [collectPoint_id], references: [id])
-  collectPoint_id   String?
+  collectPoint      CollectPoint[]
 }
 
 
@@ -42,14 +44,15 @@ model CollectPoint{
   description       String
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
-  collectUser       CollectUser[]
+  CollectUser      CollectUser? @relation(fields: [collectUser_id], references: [id])
+  collectUser_id   String?
 }
 
 
 model Sessions{
   id                String @id  @default(uuid())
   token             String
-  expiry            DateTime  
+  expiry            DateTime
   Users             Users? @relation(fields: [user_id], references: [id])
   user_id           String?
   created_at        DateTime @default(now())
