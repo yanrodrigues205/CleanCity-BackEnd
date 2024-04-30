@@ -2,6 +2,10 @@ import { NextFunction, Request, Response } from "express";
 import { verify } from "jsonwebtoken";
 import { database } from "../Database/Connection";
 
+interface AuthRequest extends Request
+{
+    userId?: string;
+}
 export default class AuthMiddeware
 {
     constructor()
@@ -11,7 +15,7 @@ export default class AuthMiddeware
 
     public static Authentication()
     {
-        return async(req: Request, res: Response, next: NextFunction) => {
+        return async(req: AuthRequest, res: Response, next: NextFunction) => {
             const authHeader = req.headers.authorization;
             if(!authHeader || !authHeader.startsWith('Bearer '))
             {
@@ -67,7 +71,7 @@ export default class AuthMiddeware
                     "status": 401
                 });
             }
-
+            req.userId = decode.payload.id;
             return next();
     };
     }
