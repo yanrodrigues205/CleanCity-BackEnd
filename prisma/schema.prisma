@@ -28,7 +28,7 @@ model Users{
 model CollectUser{
   id                String @id @default(uuid())
   name              String
-  cfpCnpj           String   @unique
+  cpfCnpj           String   @unique
   phone             String
   description       String
   created_at        DateTime @default(now())
