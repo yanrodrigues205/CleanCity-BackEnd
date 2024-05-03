@@ -1,0 +1,46 @@
+version: '3.8'
+services:
+  database:
+    image: mysql:latest
+    restart: on-failure
+    environment:
+      MYSQL_ROOT_PASSWORD: 56c46fad85a799276c99793d4543a330
+      MYSQL_DATABASE: clean_city
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      timeout: 20s
+      retries: 10
+
+  phpmyadmin:
+    container_name: php_my_admin
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8000:80"
+    environment:
+      PMA_HOST: database
+      PMA_USER: root
+      PMA_PASSWORD: 56c46fad85a799276c99793d4543a330
+    depends_on:
+      database:
+        condition: service_healthy
+
+  ts-node-docker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base
+    restart: on-failure
+    ports:
+      - '4000:9090'
+    depends_on:
+      database:
+        condition: service_healthy
+    command: >
+      sh -c "
+          ls;
+          npm install -g nodemon mysql ts-node;
+          npx prisma migrate dev;
+          npm run start;
+      "
