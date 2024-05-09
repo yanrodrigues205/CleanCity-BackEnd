@@ -13,7 +13,6 @@ export default class SessionsModel
     {
        
             const dataExpiracao = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
-           
             let SECURITY_KEY :string = String(process.env.SECURITY_KEY);
 
             if(SECURITY_KEY.length == 0 || !SECURITY_KEY)
@@ -63,6 +62,7 @@ export default class SessionsModel
                     id: true,
                     email: true,
                     name: true,
+                    collectUser_id: true,
                     password: true,
                     created_at: true,
                     updated_at: true

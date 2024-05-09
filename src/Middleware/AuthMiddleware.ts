@@ -12,10 +12,15 @@ export default class AuthMiddeware
     {
 
     }
+    /**
+     * @param verifyCollectUser //if it is necessary to check whether the user has a collection profile
+     * @returns JSON object | void
+     */
 
-    public static Authentication()
+    public static Authentication(verifyCollectUser: boolean)
     {
         return async(req: AuthRequest, res: Response, next: NextFunction) => {
+            console.log("ta no middleware")
             const authHeader = req.headers.authorization;
             if(!authHeader || !authHeader.startsWith('Bearer '))
             {
@@ -56,6 +61,32 @@ export default class AuthMiddeware
                     "message": "Sua sessão é inválida, tente logar novamente!",
                     "status": 401
                 });
+            }
+            
+
+            if(verifyCollectUser)
+            {
+                if(decode.payload.collectUser_id == null)
+                {
+                    return res.status(401).json({
+                        "message": "Para acessar este local você necessita ter o cadastro Perfil de Coleta, lamento.",
+                        "status": 401
+                    });
+                }
+
+                const verifyCollectUser = await database.collectUser.findUnique({
+                    where:{
+                        id: decode.payload.collectUser_id
+                    }
+                })
+
+                if(!verifyCollectUser)
+                {
+                    return res.status(401).json({
+                        "message": "Não foi encontrado o Perfil de Coleta vinculado, lamento.",
+                        "status": 401
+                    });
+                }
             }
 
             const verifyIdUser = await database.users.findUnique({
