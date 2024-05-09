@@ -1,11 +1,14 @@
 import CollectUser from "../Dtos/CollectUser";
 import CollectUserModel from "../Models/CollectUserModel";
 import { cnpj, cpf } from "cpf-cnpj-validator";
+import UsersController from "./UsersController";
 export default class CollectUserController extends CollectUserModel
 {
+    private _usersController: UsersController;
     constructor()
     {
         super();
+        this._usersController = new UsersController();
     }
 
 
@@ -59,14 +62,19 @@ export default class CollectUserController extends CollectUserModel
     
 
 
-        const insert = await super.insertCollectUser(local);
+        const insert : any = await super.insertCollectUser(local);
 
         if(insert)
         {
-            return  res.status(202).json({
-                message: "Usuário de coleta cadastrado com sucesso!",
-                status: 202
-            });
+            const bindCollecUser = await this._usersController.bindCollectUser(insert.id, req.userId);
+
+            if(bindCollecUser)
+            {
+                return  res.status(202).json({
+                    message: "Usuário de coleta cadastrado com sucesso!",
+                    status: 202
+                });
+            }
         }
         else
         {

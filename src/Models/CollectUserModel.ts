@@ -8,7 +8,7 @@ export default class CollectUserModel extends UsersModel
         super();
     }
 
-    protected async insertCollectUser(collectUser: CollectUser) : Promise<boolean>
+    protected async insertCollectUser(collectUser: CollectUser) : Promise<boolean | object>
     {
         try
         {
@@ -23,9 +23,8 @@ export default class CollectUserModel extends UsersModel
                     id:true
                 }
             });
-            console.log(insert);
             if(insert)
-                return true;
+                return insert;
             else
                 return false;
         }

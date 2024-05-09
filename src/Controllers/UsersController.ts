@@ -49,4 +49,20 @@ export default class UsersController extends UsersModel
                     });
         }
     }
+
+    public async bindCollectUser(collectUser_id:string, user_id: string)
+    {
+
+        if(!user_id || !collectUser_id)
+        {
+            console.error("Preencha os campos corretos para vincular o usuário ao seu cadastro como Coletor.");
+        }
+
+        let insert = await super.updateCollectUser(collectUser_id, user_id);
+
+        if(insert)
+            return true;
+        else
+            return false;
+    }
 }
