@@ -58,3 +58,17 @@ model Sessions{
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
 }
+
+model WorkHours{
+  id                String @id  @default(uuid())
+  BMD_first         String
+  BMD_second        String
+  AMD_first         String
+  AMD_second        String
+  comments          String
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+}
+//
+//BMD = Before MidDay or pt-br(Antes do Meio Dia)
+//AMD = After MidDay or pt-br(Depois do Meio Dia)
