@@ -15,7 +15,7 @@ export default class CollectUserModel extends UsersModel
             const insert = await database.collectUser.create({
                 data:{
                     name: collectUser.name,
-                    cfpCnpj: collectUser.cpf_cnpj,
+                    cpfCnpj: collectUser.cpf_cnpj,
                     phone: collectUser.phone,
                     description: collectUser.description
                 },
@@ -43,7 +43,7 @@ export default class CollectUserModel extends UsersModel
         {
             const verify = await database.collectUser.findUnique({
                 where:{
-                    cfpCnpj: cpf_cnpj
+                    cpfCnpj: cpf_cnpj
                 }
             });
 
