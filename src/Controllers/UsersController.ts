@@ -1,5 +1,6 @@
 import Users from "../Dtos/User";
 import UsersModel from "../Models/UsersModel";
+import axios from 'axios';
 
 export default class UsersController extends UsersModel
 {
@@ -22,11 +23,46 @@ export default class UsersController extends UsersModel
         let pass = data.password;
         if(pass.length < 8)
         {
-            return  res.status(400).json({
+            return  res.status(401).json({
                         message: "A senha está muito curta , deve conter no mínimo 8 caracteres!",
-                        status: 400
+                        status: 401
                     });
         }
+
+        if(!data.recaptcha)
+        {
+            return  res.status(402).json({
+                message: "Para concluir a authenticação é necessário o preenchimento do reCAPTCHA.",
+                status: 402
+            });
+        }
+    
+        const recaptcha_secret = String(process.env.RECAPTCHA_SECRET);
+        try
+        {
+            const response = await axios.post(`https://www.google.com/recaptcha/api/siteverify`, null, {
+                params: {
+                    secret: recaptcha_secret,
+                    response: data.recaptcha
+                }
+            });
+
+            const response_data = response.data.success;
+
+            if(!response_data)
+            {
+                return  res.status(402).json({
+                    message: "Erro de validação do reCAPTCHA, tente novamente.",
+                    status: 402
+                });
+            }
+        }
+        catch(err)
+        {
+            console.log(err);
+            return;
+        }
+    
 
 
         let emailExists = await super.emailExists(data.email);
@@ -34,8 +70,8 @@ export default class UsersController extends UsersModel
         if(emailExists)
         {
             return  res.status(400).json({
-                        message: "O email ja existe dentro do sistema!",
-                        status: 400
+                        message: "O email já existe dentro do sistema!",
+                        status: 403
                     });
         }
 
