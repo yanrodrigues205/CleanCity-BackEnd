@@ -106,4 +106,35 @@ export default class AuthMiddeware
             return next();
     };
     }
+
+
+    public static async verifyRoute(token: string): Promise<false | object>
+    {
+        let SECURITY_KEY :string = String(process.env.SECURITY_KEY);
+
+        if(SECURITY_KEY.length == 0 || !SECURITY_KEY)
+        {
+            console.error("Chave de segurança da API inexistente!");
+        }
+
+        let decode : any;
+        try
+        {
+            decode = await verify(token, SECURITY_KEY, {
+                complete: true
+            });
+
+            return decode;
+        }
+        catch(err)
+        {
+            console.error(err);
+            return false;
+        }
+
+        if(!decode.payload.id || !decode)
+        {
+            return false;
+        }
+    }
 }
