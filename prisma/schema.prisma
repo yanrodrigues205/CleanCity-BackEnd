@@ -22,7 +22,7 @@ model Users{
   updated_at        DateTime @updatedAt
   CollectUser       CollectUser? @relation(fields: [collectUser_id], references: [id])
   collectUser_id    String?
-  Sessions          Sessions[]
+  TwoFactors          TwoFactors[]
 }
 
 model CollectUser{
@@ -44,8 +44,10 @@ model CollectPoint{
   description       String
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
+  WorkHours        WorkHours? @relation(fields: [workHours_id], references: [id])
   CollectUser      CollectUser? @relation(fields: [collectUser_id], references: [id])
   collectUser_id   String?
+  workHours_id   String?
 }
 
 
@@ -53,22 +55,32 @@ model Sessions{
   id                String @id  @default(uuid())
   token             String
   expiry            DateTime
-  Users             Users? @relation(fields: [user_id], references: [id])
-  user_id           String?
+  TwoFactors             TwoFactors? @relation(fields: [twofactors_id], references: [id])
+  twofactors_id           String?
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
 }
 
 model WorkHours{
   id                String @id  @default(uuid())
-  BMD_first         String
+  BMD_first         String //BMD = Before MidDay or pt-br(Antes do Meio Dia)
   BMD_second        String
-  AMD_first         String
+  AMD_first         String//AMD = After MidDay or pt-br(Depois do Meio Dia)
   AMD_second        String
   comments          String
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
+  CollectPoint      CollectPoint[]
 }
-//
-//BMD = Before MidDay or pt-br(Antes do Meio Dia)
-//AMD = After MidDay or pt-br(Depois do Meio Dia)
+
+model TwoFactors{
+  id            String @id  @default(uuid())
+  Users             Users? @relation(fields: [user_id], references: [id])
+  user_id           String?
+  OPT               String    //One-Time Password
+  verify            Boolean @default(false)
+  expiry            DateTime
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+  Sessions          Sessions[]
+}
