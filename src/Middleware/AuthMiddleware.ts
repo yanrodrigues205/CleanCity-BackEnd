@@ -24,9 +24,9 @@ export default class AuthMiddeware
             const authHeader = req.headers.authorization;
             if(!authHeader || !authHeader.startsWith('Bearer '))
             {
-                return res.status(401).json({
+                return res.status(400).json({
                     "message": "Para acessar esta ambiente você necessita estar logado no sistema!",
-                    "status": 401
+                    "status": 400
                 });
             }
 
@@ -55,56 +55,92 @@ export default class AuthMiddeware
                 });
             }
 
-            if(!decode.payload.id || !decode)
+            if(!decode.payload.id_twofactors || !decode)
             {
-                return res.status(401).json({
+                return res.status(402).json({
                     "message": "Sua sessão é inválida, tente logar novamente!",
-                    "status": 401
+                    "status": 402
+                });
+            }
+
+
+            const getTwoFactors = await database.twoFactors.findUnique({
+                where: {
+                    id: decode.payload.id_twofactors
+                }
+            });
+            
+            if(!getTwoFactors)
+            {
+                return res.status(403).json({
+                    "message": "Não foi possível identificar o processo de autheticação feito por este token, tente novamente.",
+                    "status": 403
+                });
+            }
+
+
+            const getSession = await database.sessions.findMany({
+                where:{
+                    twofactors_id: decode.payload.id_twofactors,
+                    token: token
+                }
+            });
+
+            if(!getSession)
+            {
+                return res.status(403).json({
+                    "message": "Não foi possível identificar a sessão iniciada por este token, tente novamente.",
+                    "status": 403
+                });
+            }
+
+            let getUser;
+            if(getTwoFactors?.user_id && getTwoFactors?.user_id?.length > 0)
+            {
+                getUser = await database.users.findUnique({
+                    where:{
+                        id: getTwoFactors.user_id
+                    }
+                });
+            }
+
+            if(!getUser)
+            {
+                return res.status(403).json({
+                    "message": "Não foi possível identificar o usuário responsável pela authenticação.",
+                    "status": 403
                 });
             }
             
 
             if(verifyCollectUser)
             {
-                if(decode.payload.collectUser_id == null)
+                if(getUser?.collectUser_id == null)
                 {
-                    return res.status(401).json({
+                    return res.status(403).json({
                         "message": "Para acessar este local você necessita ter o cadastro Perfil de Coleta, lamento.",
-                        "status": 401
+                        "status": 403
                     });
                 }
 
-                const verifyCollectUser = await database.collectUser.findUnique({
+                const getCollectUser = await database.collectUser.findUnique({
                     where:{
-                        id: decode.payload.collectUser_id
+                        id: getUser?.collectUser_id
                     }
                 })
 
-                if(!verifyCollectUser)
+                if(!getCollectUser)
                 {
-                    return res.status(401).json({
+                    return res.status(403).json({
                         "message": "Não foi encontrado o Perfil de Coleta vinculado, lamento.",
-                        "status": 401
+                        "status": 403
                     });
                 }
             }
 
-            const verifyIdUser = await database.users.findUnique({
-                where:{
-                    id: decode.payload.id
-                }
-            });
-
-            if(!verifyIdUser)
-            {
-                return res.status(401).json({
-                    "message": "Sua sessão é inválida, tente logar novamente!",
-                    "status": 401
-                });
-            }
-            req.userId = decode.payload.id;
+            req.userId = getUser.id;
             return next();
-    };
+        };
     }
 
 
