@@ -1,4 +1,3 @@
-import { sub } from "react-native-reanimated";
 import transport from "../Config/MailerConfig";
 export default class MailerService
 {
