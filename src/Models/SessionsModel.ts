@@ -111,5 +111,51 @@ export default class SessionsModel extends TwoFactorsModel
             return false;
         }
     }
+
+    protected async sessionDataByTwoFactorsID(id_twofactors: string)
+    {
+        try
+        {
+            const getTwoFactors : any = await database.twoFactors.findUnique({
+                where: {
+                    id: id_twofactors
+                },
+                select: {
+                    user_id: true
+                }
+            });
+            
+            const getSessions : any = await database.sessions.findMany({
+                where: {
+                    twofactors_id: id_twofactors
+                },
+                select: {
+                    created_at: true,
+                    expiry: true
+                }
+            });
+
+            const getUser : any = await database.users.findUnique({
+                where:{
+                    id: getTwoFactors.user_id
+                },
+                select:{
+                    collectUser_id: true
+                }
+            });
+
+            return {
+                expiry: getSessions[0].expiry,
+                created_at: getSessions[0].created_at,
+                collect_user_id: getUser.collectUser_id,
+                user_id: getTwoFactors.user_id
+            }
+        }
+        catch(err)
+        {
+            console.error(err);
+            return false;
+        }
+    }
 }
 

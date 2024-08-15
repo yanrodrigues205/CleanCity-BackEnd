@@ -151,7 +151,7 @@ export default class SessionsController extends SessionsModel
                     });
         }
 
-        let response = await AuthMiddeware.verifyRoute(data.token);
+        let response : any = await AuthMiddeware.verifyRoute(data.token);
 
         if(!response)
         {
@@ -161,6 +161,14 @@ export default class SessionsController extends SessionsModel
             });
         }
 
-        return res.status(202).json(response);
+        if(!response.payload.id_twofactors)
+        {
+            return  res.status(402).json({
+                message: "Sessão inexistente dentro do sistema, tente novamente.",
+                status: 402
+            });
+        }
+        const getDataSession = await super.sessionDataByTwoFactorsID(response.payload.id_twofactors);
+        return res.status(202).json(getDataSession);
     }
 }
