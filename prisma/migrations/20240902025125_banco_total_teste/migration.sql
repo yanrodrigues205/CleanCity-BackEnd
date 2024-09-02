@@ -34,6 +34,7 @@ CREATE TABLE `CollectPoint` (
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
     `collectUser_id` VARCHAR(191) NULL,
+    `workHours_id` VARCHAR(191) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -43,7 +44,34 @@ CREATE TABLE `Sessions` (
     `id` VARCHAR(191) NOT NULL,
     `token` VARCHAR(191) NOT NULL,
     `expiry` DATETIME(3) NOT NULL,
+    `twofactors_id` VARCHAR(191) NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `WorkHours` (
+    `id` VARCHAR(191) NOT NULL,
+    `BMD_first` VARCHAR(191) NOT NULL,
+    `BMD_second` VARCHAR(191) NOT NULL,
+    `AMD_first` VARCHAR(191) NOT NULL,
+    `AMD_second` VARCHAR(191) NOT NULL,
+    `comments` VARCHAR(191) NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `TwoFactors` (
+    `id` VARCHAR(191) NOT NULL,
     `user_id` VARCHAR(191) NULL,
+    `OPT` VARCHAR(191) NOT NULL,
+    `verify` BOOLEAN NOT NULL DEFAULT false,
+    `expiry` DATETIME(3) NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -54,7 +82,13 @@ CREATE TABLE `Sessions` (
 ALTER TABLE `Users` ADD CONSTRAINT `Users_collectUser_id_fkey` FOREIGN KEY (`collectUser_id`) REFERENCES `CollectUser`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `CollectPoint` ADD CONSTRAINT `CollectPoint_workHours_id_fkey` FOREIGN KEY (`workHours_id`) REFERENCES `WorkHours`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `CollectPoint` ADD CONSTRAINT `CollectPoint_collectUser_id_fkey` FOREIGN KEY (`collectUser_id`) REFERENCES `CollectUser`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Sessions` ADD CONSTRAINT `Sessions_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `Users`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Sessions` ADD CONSTRAINT `Sessions_twofactors_id_fkey` FOREIGN KEY (`twofactors_id`) REFERENCES `TwoFactors`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `TwoFactors` ADD CONSTRAINT `TwoFactors_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `Users`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
