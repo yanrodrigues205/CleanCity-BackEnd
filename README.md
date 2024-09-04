@@ -6,28 +6,22 @@
 
 <h2 id="technologies">💻 Technologies</h2>
 
-- list of all technologies you used
 - Typescript
 - MySQL
 - Prisma
 - NodeJS
 - Docker
+- Docker Compose
 
 <h2 id="started">🚀 Getting started</h2>
 
-Here you describe how to run your project locally
-
 <h3>Prerequisites</h3>
-
-Here you list all prerequisites necessary for running your project. For example:
 
 - [NodeJS](https://nodejs.org/en)
 - [Git](https://git-scm.com/)
 - [Docker](https://www.docker.com/)
 
 <h3>Cloning</h3>
-
-How to clone your project
 
 ```bash
 git clone https://github.com/yanrodrigues205/CleanCity-BackEnd.git
@@ -54,7 +48,7 @@ SERVER_MESSAGE="RODANDO"
 
 <h3>Starting</h3>
 
-How to start your project
+How to start the project
 
 ```bash
 cd CleanCity-BackEnd
@@ -62,8 +56,6 @@ docker-compose up
 ```
 
 <h2 id="routes">📍 API Endpoints</h2>
-
-Here you can list the main routes of your API, and what are their expected request bodies.
 ​
 | route               | description                                          
 |----------------------|-----------------------------------------------------
