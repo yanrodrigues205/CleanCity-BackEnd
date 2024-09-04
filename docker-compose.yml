@@ -4,12 +4,12 @@ services:
     image: mysql:latest
     restart: on-failure
     environment:
-      MYSQL_ROOT_PASSWORD: 56c46fad85a799276c99793d4543a330
-      MYSQL_DATABASE: clean_city
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_DATABASE: ${DATABASE_NAME}
     ports:
-      - "3306:3306"
+      - "${DATABASE_PORT}:3306"
     healthcheck:
-      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      test: [ 'CMD', 'mysqladmin', 'ping', '-h', 'localhost' ]
       timeout: 20s
       retries: 10
 
@@ -17,11 +17,11 @@ services:
     container_name: php_my_admin
     image: phpmyadmin/phpmyadmin
     ports:
-      - "8000:80"
+      - "${PHP_MY_ADMIN_PORT}:80"
     environment:
-      PMA_HOST: database
-      PMA_USER: root
-      PMA_PASSWORD: 56c46fad85a799276c99793d4543a330
+      PMA_HOST: ${DATABASE_HOST}
+      PMA_USER: ${DATABASE_USER}
+      PMA_PASSWORD: ${DATABASE_PASSWORD}
     depends_on:
       database:
         condition: service_healthy
@@ -33,7 +33,7 @@ services:
       target: base
     restart: on-failure
     ports:
-      - '4000:9090'
+      - '${SERVER_PORT}:3000'
     depends_on:
       database:
         condition: service_healthy
@@ -41,6 +41,9 @@ services:
       sh -c "
           ls;
           npm install -g nodemon mysql ts-node;
-          npx prisma migrate dev;
+          npx prisma migrate dev --name banco_total_teste;
+          npx prisma generate;
           npm run start;
       "
+    volumes:
+      - .:/home/node/ts/app

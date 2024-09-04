@@ -5,22 +5,19 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import { docsOptions } from "./Config/DocsConfig";
 require("dotenv").config();
-export default class Server
-{
+export default class Server {
     private port: string;
     private message: string;
     private app: any;
 
-    constructor()
-    {
-        this.port = String(process.env.SERVER_PORT);
+    constructor() {
+        this.port = String(3000);
         this.message = String(process.env.SERVER_MESSAGE);
         this.app = express();
     }
 
 
-    async __init__()
-    {
+    async __init__() {
         const corsOptions = {
             origin: '*',
             methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -30,10 +27,9 @@ export default class Server
         this.app.use(express.json());
         this.app.use(routes);
         const configsDocs = swaggerJsdoc(docsOptions);
-        this.app.use("/docs",swaggerUi.serve, swaggerUi.setup(configsDocs));
-        await this.app.listen(this.port, ()=>{
-            console.log("Server running on the port 🚀 => "+this.port);
-            console.log(this.message);
+        this.app.use("/docs", swaggerUi.serve, swaggerUi.setup(configsDocs));
+        await this.app.listen(this.port, () => {
+            console.log("Start server on: http://localhost:" + process.env.SERVER_PORT);
         });
     }
 }
