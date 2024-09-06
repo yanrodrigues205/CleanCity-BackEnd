@@ -502,13 +502,172 @@ routes.post("/verify", (req, res) =>{
     sessionController.verifySession(req, res);
 });
 
-
-//COLLECT_USER
+/**
+* @swagger
+ * /collect_user/insert:
+ *   post:
+ *     summary: Rota para cadastro de usuários de coleta
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: "Nome do trabalhador ou empresa"
+ *               cpf_cnpj:
+ *                 type: string
+ *                 description: "CPF ou CNPJ do trabalhador ou empresa"
+ *               phone:
+ *                 type: string
+ *                 description: "Telefone de contato"
+ *               description:
+ *                 type: string
+ *                 description: "Descrição dos horários de trabalho"
+ *             required:
+ *               - name
+ *               - cpf_cnpj
+ *               - phone
+ *               - description
+ *     tags: [Usuários]
+ *     parameters:
+ *       - name: token
+ *         in: query
+ *         description: "Token de sessão com informações criptografadas retornado pelo Segundo Passo da Authenticação Dois-Fatores"
+ *         required: true
+ *     responses:
+ *       202:
+ *         description: Usuário de coleta cadastrado com sucesso.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Mensagem de erro.
+ *                 status:
+ *                   type: string
+ *                   description: Status de erro na operação.
+ *               example:
+ *                 message: Usuário de coleta cadastrado com sucesso!.
+ *                 status: 202
+ *       400:
+ *         description: Formulário invalido.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Mensagem de erro.
+ *                 status:
+ *                   type: string
+ *                   description: Status de erro na operação.
+ *               example:
+ *                 message: Preencha todos os campos para criar seu perfil de coleta!
+ *                 status: 400
+ *       500:
+ *         description: Erro ao cadastrar usuário de coleta.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Mensagem de erro.
+ *                 status:
+ *                   type: string
+ *                   description: Status de erro na operação.
+ *               example:
+ *                 message: Não foi possível inserir o usuário de coleta!
+ *                 status: 500
+ */
 routes.post("/collect_user/insert",AuthMiddeware.Authentication(false), (req, res) => {
     collectUserController.createCollectUser(req, res);
 });
 
-// //WORK_HOURS
+/**
+* @swagger
+ * /work_hours/insert:
+ *   post:
+ *     summary: Rota de cadastro de horários de trabalho
+ *     tags: [Ponto Coleta]
+ *     parameters:
+ *       - name: token
+ *         in: query
+ *         description: "Token de sessão com informações criptografadas, retornado pelo Segundo Passo da Autenticação de Dois Fatores"
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               BMD_first:
+ *                 type: string
+ *                 description: "Horário de início da manhã"
+ *               BMD_second:
+ *                 type: string
+ *                 description: "Horário de fim da manhã"
+ *               AMD_first:
+ *                 type: string
+ *                 description: "Horário de início da tarde"
+ *               AMD_second:
+ *                 type: string
+ *                 description: "Horário de fim da tarde"
+ *               comments:
+ *                 type: string
+ *                 description: "Comentários adicionais sobre os horários"
+ *             required:
+ *               - comments
+ *               - BMD_first
+ *               - BMD_second
+ *               - AMD_first
+ *               - AMD_second
+ *     responses:
+ *       202:
+ *         description: Cadastro realizado com sucesso do horário de trabalho.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Mensagem de sucesso.
+ *                 status:
+ *                   type: string
+ *                   description: Status da operação.
+ *               example:
+ *                 message: Horário de Trabalho cadastrado com sucesso!
+ *                 status: 202
+ *       400:
+ *         description: Dados faltando no formulário de cadastro de horários de trabalho.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Mensagem de erro.
+ *                 status:
+ *                   type: string
+ *                   description: Status de erro na operação.
+ *               example:
+ *                 message: Preencha todos os campos para cadastrar um horário de trabalho.
+ *                 status: 400
+ */
+
+
 routes.post("/work_hours/insert", AuthMiddeware.Authentication(true),  (req, res) => {
      workHoursController.createWorkHours(req, res);
 });
