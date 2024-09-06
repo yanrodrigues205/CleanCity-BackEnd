@@ -65,38 +65,224 @@ docker-compose up
 
 Here you can list the main routes of your API, and what are their expected request bodies.
 ​
-| route               | description                                          
+
+| routes               | link in page                                        
 |----------------------|-----------------------------------------------------
-| <kbd>GET /authenticate</kbd>     | retrieves user info see [response details](#get-auth-detail)
-| <kbd>POST /authenticate</kbd>     | authenticate user into the api see [request details](#post-auth-detail)
+|<kbd>POST /signup</kbd>|Click to see [here](#post-signup)
+|<kbd>POST /first-factor</kbd>|Click to see [here](#post-first-factor)
+|<kbd>POST /second-factor</kbd>|Click to see [here](#post-second-factor)
+| <kbd>POST /verify</kbd>|Click to see [here](#post-verify)
 
-<h3 id="get-auth-detail">GET /authenticate</h3>
+<h3 id="post-signup">POST /signup</h3>
 
-**RESPONSE**
+**Summary:** Cadastro de Usuários
+
+**Request Body:**
+
 ```json
 {
-  "name": "Tester 1",
-  "age": 18,
-  "email": "tester@cleancity.com"
+  "name": "Recicla Aqui da Silva",
+  "email": "recicla_aqui@exemplo.com",
+  "password": "KIwqs62t1_l"
 }
 ```
 
-<h3 id="post-auth-detail">POST /authenticate</h3>
+**Response 202 (Created):**
 
-**REQUEST**
 ```json
 {
-  "username": "tester",
-  "password": "tester"
+  "message": "Usuário criado com sucesso!",
+  "status": "202"
 }
 ```
 
-**RESPONSE**
+**Response 400 (Bad Request):**
+
 ```json
 {
-  "token": "OwoMRHsaQwyAgVoc3OXmL1JhMVUYXGGBbCTK0GBgiYitwQwjf0gVoBmkbuyy0pSi"
+  "message": "Preencha todos os campos para finalizar seu cadastro!",
+  "status": "400"
 }
 ```
+
+**Response 401 (Unauthorized):**
+
+```json
+{
+  "message": "A senha está muito curta , deve conter no mínimo 8 caracteres!",
+  "status": "401"
+}
+```
+
+**Response 402 (Payment Required):**
+
+```json
+{
+  "message": "Erro de validação do reCAPTCHA, tente novamente.",
+  "status": "402"
+}
+```
+
+**Response 403 (Forbidden):**
+
+```json
+{
+  "message": "O email já existe dentro do sistema!",
+  "status": "403"
+}
+```
+
+<h3 id="post-first-factor">POST /first-factor</h3>
+
+**Summary:** Primeiro passo do processo de autenticação de Dois Fatores
+
+**Request Body:**
+
+```json
+{
+  "email": "recicla_aqui@exemplo.com",
+  "password": "KIwqs62t1_l"
+}
+```
+
+**Response 202 (Accepted):**
+
+```json
+{
+  "message": "Para concluir a autenticação, verifique a caixa de emails aonde foi enviado o código de verificação.",
+  "id_OTP": "Gja67y",
+  "expiry": "2024-07-23 10:45:12.496",
+  "status": "202"
+}
+```
+
+**Response 400 (Bad Request):**
+
+```json
+{
+  "message": "Preencha todos os campos para entrar na sua conta!",
+  "status": "400"
+}
+```
+
+**Response 401 (Unauthorized):**
+
+```json
+{
+  "message": "O email não foi encontrado no sistema, digite novamente!",
+  "status": "401"
+}
+```
+
+**Response 402 (Payment Required):**
+
+```json
+{
+  "message": "Erro de validação do reCAPTCHA, tente novamente.",
+  "status": "402"
+}
+```
+
+**Response 403 (Forbidden):**
+
+```json
+{
+  "message": "A senha digitada esta incorreta, digite novamente!",
+  "status": "403"
+}
+```
+
+**Response 421 (Misdirected Request):**
+
+```json
+{
+  "message": "Não foi possível concluir o o primeiro passo da autenticação dois fatores.",
+  "status": "421"
+}
+```
+
+<h3 id="post-second-factor">POST /second-factor</h3>
+
+**Summary:** Segundo passo do processo de autenticação de Dois Fatores
+
+**Request Body:**
+
+```json
+{
+  "otp": "52Tuy8",
+  "id": "65a13a3e-2d15-4047-bca6-bce947c91ba3"
+}
+```
+
+**Response 202 (Accepted):**
+
+```json
+{
+  "message": "Sessão iniciada com sucesso!",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+  "status": "202"
+}
+```
+
+**Response 400 (Bad Request):**
+
+```json
+{
+  "message": "Indentificação de fatores faltando campos, tente novamente.",
+  "status": "400"
+}
+```
+
+**Response 401 (Unauthorized):**
+
+```json
+{
+  "message": "Indentificação de fatores inválida, tente novamente.",
+  "status": "401"
+}
+```
+
+**Response 402 (Payment Required):**
+
+```json
+{
+  "message": "Não foi possível realizar a criação da sessão!",
+  "status": "402"
+}
+```
+
+<h3 id="post-verify">POST /verify</h3>
+
+**Summary:** Rota de verificação de token, com base nos direitos do usuário a manipulação do Front-End
+
+**Request Body:**
+
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+}
+```
+
+**Response 202 (Accepted):**
+
+```json
+{
+  "message": "Finalizar a documentação desta rota.",
+  "status": "202"
+}
+```
+
+**Response 400 (Bad Request):**
+
+```json
+{
+  "message": "Para a verificação de sessão é necessário informar o token.",
+  "status": "400"
+}
+```
+
+
+
 
 <h2 id="colab">🤝 Collaborators</h2>
 
