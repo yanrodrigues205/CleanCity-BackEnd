@@ -12,10 +12,11 @@ const sessionController = new SessionsController();
 export const routes = Router();
 
 routes.get("/", (req, res) => {
-    res.status(244).json({
-        message: "bem vindo!"
-    })
+  res.status(244).json({
+    message: "bem vindo!"
+  })
 })
+routes.post("/test", (req, res) => { usersController.test(req, res) });
 
 
 //AUTHENTICATION AND REGISTER ROUTE
@@ -210,7 +211,7 @@ routes.get("/", (req, res) => {
  *                 message: O email já existe dentro do sistema!
  *                 status: 403
  */
-routes.post("/signup", (req, res) =>{   usersController.createUser(req, res)    });
+routes.post("/signup", (req, res) => { usersController.createUser(req, res) });
 
 
 
@@ -345,7 +346,7 @@ routes.post("/signup", (req, res) =>{   usersController.createUser(req, res)    
  *                 message: Não foi possível concluir o o primeiro passo da authenticação dois fatores.
  *                 status: 421
  */
-routes.post("/first-factor", (req, res) =>{   sessionController.firstFactor(req, res)   });
+routes.post("/first-factor", (req, res) => { sessionController.firstFactor(req, res) });
 
 /**
  * @swagger
@@ -442,7 +443,7 @@ routes.post("/first-factor", (req, res) =>{   sessionController.firstFactor(req,
  *                 message: Não foi possível realizar a criação da sessão!
  *                 status: 402
  */
-routes.post("/second-factor", (req, res) =>{   sessionController.secondFactor(req, res)   });
+routes.post("/second-factor", (req, res) => { sessionController.secondFactor(req, res) });
 
 /**
 * @swagger
@@ -498,8 +499,8 @@ routes.post("/second-factor", (req, res) =>{   sessionController.secondFactor(re
  *                 message: Para a verificação de sessão é necessário informar o token.
  *                 status: 400
  */
-routes.post("/verify", (req, res) =>{
-    sessionController.verifySession(req, res);
+routes.post("/verify", (req, res) => {
+  sessionController.verifySession(req, res);
 });
 
 /**
@@ -587,8 +588,8 @@ routes.post("/verify", (req, res) =>{
  *                 message: Não foi possível inserir o usuário de coleta!
  *                 status: 500
  */
-routes.post("/collect_user/insert",AuthMiddeware.Authentication(false), (req, res) => {
-    collectUserController.createCollectUser(req, res);
+routes.post("/collect_user/insert", AuthMiddeware.Authentication(false), (req, res) => {
+  collectUserController.createCollectUser(req, res);
 });
 
 /**
@@ -668,6 +669,6 @@ routes.post("/collect_user/insert",AuthMiddeware.Authentication(false), (req, re
  */
 
 
-routes.post("/work_hours/insert", AuthMiddeware.Authentication(true),  (req, res) => {
-     workHoursController.createWorkHours(req, res);
+routes.post("/work_hours/insert", AuthMiddeware.Authentication(true), (req, res) => {
+  workHoursController.createWorkHours(req, res);
 });
