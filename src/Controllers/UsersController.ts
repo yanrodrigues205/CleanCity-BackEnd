@@ -101,4 +101,33 @@ export default class UsersController extends UsersModel
         else
             return false;
     }
+
+    public async getUserByID(req: any, res: any)
+    {
+        
+        const data = req.body;
+
+        if(!data.id)
+        {
+            return  res.status(400).json({
+                        message: "Para concluir a operação é necessário um ID de usuário.",
+                        status: 400
+                    });
+        }
+
+        let getUser = await super.getDataById(data.id);
+
+        if(!getUser)
+        {
+            
+            return  res.status(401).json({
+                message: "Está identificação de usuário é inválida, tente novamente.",
+                status: 401
+            });
+        }
+        else
+        {
+            return res.status(202).json(getUser);
+        }
+    }
 }

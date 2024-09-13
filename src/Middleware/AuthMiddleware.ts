@@ -20,7 +20,6 @@ export default class AuthMiddeware
     public static Authentication(verifyCollectUser: boolean)
     {
         return async(req: AuthRequest, res: Response, next: NextFunction) => {
-            console.log("ta no middleware")
             const authHeader = req.headers.authorization;
             if(!authHeader || !authHeader.startsWith('Bearer '))
             {
