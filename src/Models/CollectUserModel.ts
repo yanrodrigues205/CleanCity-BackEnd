@@ -57,4 +57,39 @@ export default class CollectUserModel extends UsersModel
             return false;
         }
     }
+
+    public async getDataById(collect_user_id : string) : Promise<object | false>
+    {
+        try
+        {
+            let getColletUser = await database.collectUser.findMany({
+                where:{
+                    id: collect_user_id
+                },
+                select:{
+                    id: true,
+                    name: true,
+                    cpfCnpj: true,
+                    phone: true,
+                    description: true,
+                    created_at: true,
+                    updated_at: true
+                }
+            });
+
+            if(getColletUser.length > 0)
+            {
+                return getColletUser;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch(err)
+        {
+            console.error(err);
+            return false;
+        }
+    }
 }
