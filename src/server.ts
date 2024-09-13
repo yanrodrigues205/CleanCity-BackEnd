@@ -11,7 +11,7 @@ export default class Server {
     private app: any;
 
     constructor() {
-        this.port = String(3000);
+        this.port = String(9090);
         this.message = String(process.env.SERVER_MESSAGE);
         this.app = express();
     }

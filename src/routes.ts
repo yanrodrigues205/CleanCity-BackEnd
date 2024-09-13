@@ -211,7 +211,7 @@ routes.get("/", (req, res) => {
  *                 status: 403
  */
 routes.post("/signup", (req, res) =>{   usersController.createUser(req, res)    });
-
+routes.post("/user/getUserById", AuthMiddeware.Authentication(false), (req, res) => { usersController.getUserByID(req, res) });
 
 
 /**
@@ -508,7 +508,25 @@ routes.post("/collect_user/insert",AuthMiddeware.Authentication(false), (req, re
     collectUserController.createCollectUser(req, res);
 });
 
+routes.post("/collect_user/getCollectUserById", AuthMiddeware.Authentication(false), (req, res) => { 
+    collectUserController.getCollectUserById(req, res) 
+});
+
+
+
 // //WORK_HOURS
 routes.post("/work_hours/insert", AuthMiddeware.Authentication(true),  (req, res) => {
      workHoursController.createWorkHours(req, res);
+});
+
+routes.get("/work_hours/getall", AuthMiddeware.Authentication(true), (req, res) => {
+    workHoursController.getAllWorkHours(req, res);
+});
+
+routes.delete("/work_hours/deleteById", AuthMiddeware.Authentication(true), (req, res) => {
+    workHoursController.dropWorkHoursById(req, res);
+});
+
+routes.put("/work_hours/updateById", AuthMiddeware.Authentication(true), (req, res) => {
+    workHoursController.updateWorkHoursById(req, res);
 });

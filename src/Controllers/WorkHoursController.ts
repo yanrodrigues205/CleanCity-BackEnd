@@ -1,18 +1,23 @@
-import WorkHours from "../Dtos/WorkHours";
+import WorkHours from "../@Types/WorkHours";
 import WorkHoursModel from "../Models/WorkHoursModel";
 import VerifyHour from "../Services/VerifyHour";
+import UsersModel from "../Models/UsersModel";
+import WorkHoursDTO from "../Dtos/WorkHours";
+
 export default class WorkHoursController extends WorkHoursModel
 {
+    private _userModel;
     constructor()
     {
         super();
+        this._userModel = new UsersModel();
     }
 
     public async createWorkHours(req: any, res: any)
     {
-        const {BMD_first, BMD_second, AMD_first, AMD_second, comments } = req.body;
+        const {BMD_first, BMD_second, AMD_first, AMD_second, comments, week_days, id_collect_user } = req.body;
 
-        if(!BMD_first || !BMD_second || !comments || !AMD_first || !AMD_second)
+        if(!BMD_first || !BMD_second || !comments || !AMD_first || !AMD_second || !week_days || !id_collect_user)
         {
             return  res.status(400).json({
                         message: "Preencha todos os campos para cadastrar um horário de trabalho",
@@ -42,7 +47,9 @@ export default class WorkHoursController extends WorkHoursModel
             BMD_second,
             AMD_first,
             AMD_second,
-            comments
+            comments,
+            week_days,
+            id_collect_user
         };
         const insert = await super.insert(data);
 
@@ -63,4 +70,109 @@ export default class WorkHoursController extends WorkHoursModel
 
 
     }
+
+    public async getAllWorkHours(req:any, res:any)
+    {
+
+        const getUser : any = await this._userModel.getDataById(req.userId);
+
+        if(!getUser.collectUser_id)
+        {
+            
+            return  res.status(403).json({
+                message: "Para acessar está página é necessário o cadastro completo do usuário de coleta.",
+                status: 403
+            });
+        }
+
+ 
+        const getall : any = await super.getAllByCollectUserID(getUser.collectUser_id);
+
+        if(getall.length <= 0)
+        {
+            return  res.status(402).json({
+                message: "Não foi encontrado nenhum horário de funcionamento.",
+                status: 402
+            });
+        }
+
+        return res.status(202).json(getall);
+    }
+
+    public async dropWorkHoursById(req : any, res : any)
+    {
+        const { id } = req.body;
+
+        console.log(req.userId);
+        if(!id)
+        {
+            return  res.status(400).json({
+                message: "Para deletar um horário de funcionamento é necessário informar a identificação do mesmo.",
+                status: 400
+            });
+        }
+
+        const drop = await super.deleteWorkHoursByID(id);
+
+        if(!drop)
+        {
+            return  res.status(401).json({
+                message: "Não foi encontrado nenhum horário de funcionamento com essa identificação.",
+                status: 401
+            });
+        }
+
+        return res.status(202).json({
+            message: "Horário de funcionamento apagado com sucesso!",
+            status: 202
+        })
+    }
+
+    public async updateWorkHoursById(req : any, res : any) 
+    {
+        const { id, BMD_first, BMD_second, AMD_first, AMD_second, comments, week_days } = req.body;
+
+        if(!id)
+        {
+            return res.status(400).json({
+                message: "Para alterar um horário de funcionamento é necessário informar sua identificação.",
+                status: 400
+            })
+        }
+        
+
+        if(!BMD_first && !BMD_second && !AMD_first && !AMD_second && !comments && !week_days)
+        {
+            return res.status(401).json({
+                message: "Para concluir a alteração é neceesário adicionar ao menos um campo a ser alterado.",
+                status: 401
+            });
+        }
+
+        let data : WorkHoursDTO = {
+            AMD_first,
+            AMD_second,
+            BMD_first,
+            BMD_second,
+            comments,
+            week_days
+        }
+
+        const update : any = await super.updateOneByID(id, data);
+
+        if(!update)
+        {
+            return res.status(402).json({
+                message: "Não foi possivél concluir a alteração!",
+                status: 402
+            });
+        }
+
+        return res.status(202).json({
+            message: "Horário de Funcionamento alterado com sucesso!",
+            status: 202,
+            updated: update
+        })
+    }
 }
+

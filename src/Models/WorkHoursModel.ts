@@ -1,5 +1,6 @@
 import { database } from "../Database/Connection";
-import WorkHours from "../Dtos/WorkHours";
+import WorkHours from "../@Types/WorkHours";
+import WorkHoursDTO from "../Dtos/WorkHours";
 export default class WorkHoursModel
 {
     constructor()
@@ -13,6 +14,8 @@ export default class WorkHoursModel
         {
             const insert = await database.workHours.create({
                 data:{
+                    collectUser_id: data.id_collect_user,
+                    week_days: data.week_days,
                     BMD_first: data.BMD_first,
                     BMD_second: data.BMD_second,
                     AMD_first: data.AMD_first,
@@ -34,15 +37,114 @@ export default class WorkHoursModel
 
     }
 
-    protected async getAll() : Promise<object | boolean>
+    protected async getAllByCollectUserID(id_collect_user: string) : Promise<object | false>
     {
         try
         {
-            return true;
+            const response = await database.workHours.findMany({
+                where:{
+                    collectUser_id: id_collect_user
+                }
+            });
+            if(response.length > 0)
+            {
+                return response;
+            }
+            else
+            {
+                return false;
+            }
         }
         catch(err)
         {
-            return {};
+            console.error(err);
+            return false;
+        }
+    }
+
+    protected async deleteWorkHoursByID(id_work_hours: string) : Promise<boolean>
+    {
+        try
+        {
+            const action = await database.workHours.delete({
+                where: {
+                    id: id_work_hours
+                }
+            });
+
+            if(action)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch(err)
+        {
+            console.error(err);
+            return false;
+        }
+    }
+
+    protected async getOneByID(id_work_hours: string, id_collect_user: string) : Promise<object | false>
+    {
+        try
+        {
+            const data = await database.workHours.findMany({
+                where: {
+                    id: id_work_hours,
+                    collectUser_id: id_collect_user
+                }
+            });
+
+            if(data.length < 0)
+            {
+                return data;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch(err)
+        {
+            console.error(err);
+            return false;
+        }
+    }
+
+    protected async updateOneByID(id_work_hours: string, data: WorkHoursDTO) : Promise<object | false>
+    {
+        try
+        {
+            const filtredData = Object.fromEntries(
+                Object.entries(data).filter(
+                    ([name, value]) => value !== null && value !== false
+                )
+            )
+            const update :any = await database.workHours.update({
+                where:
+                {
+                    id: id_work_hours
+                },
+                data: filtredData
+            });
+            console.log(update)
+            if(typeof update === "object")
+            {
+                return update;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch(err)
+        {
+            console.error(err)
+            return false;
         }
     }
 }

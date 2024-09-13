@@ -22,7 +22,7 @@ model Users{
   updated_at        DateTime @updatedAt
   CollectUser       CollectUser? @relation(fields: [collectUser_id], references: [id])
   collectUser_id    String?
-  TwoFactors          TwoFactors[]
+  TwoFactors        TwoFactors[]
 }
 
 model CollectUser{
@@ -35,6 +35,7 @@ model CollectUser{
   updated_at        DateTime @updatedAt
   users             Users[]
   collectPoint      CollectPoint[]
+  workHours         WorkHours[]
 }
 
 
@@ -44,10 +45,10 @@ model CollectPoint{
   description       String
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
-  WorkHours        WorkHours? @relation(fields: [workHours_id], references: [id])
-  CollectUser      CollectUser? @relation(fields: [collectUser_id], references: [id])
-  collectUser_id   String?
-  workHours_id   String?
+  WorkHours         WorkHours? @relation(fields: [workHours_id], references: [id])
+  CollectUser       CollectUser? @relation(fields: [collectUser_id], references: [id])
+  collectUser_id    String?
+  workHours_id      String?
 }
 
 
@@ -55,8 +56,8 @@ model Sessions{
   id                String @id  @default(uuid())
   token             String
   expiry            DateTime
-  TwoFactors             TwoFactors? @relation(fields: [twofactors_id], references: [id])
-  twofactors_id           String?
+  TwoFactors        TwoFactors? @relation(fields: [twofactors_id], references: [id])
+  twofactors_id     String?
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
 }
@@ -68,9 +69,13 @@ model WorkHours{
   AMD_first         String//AMD = After MidDay or pt-br(Depois do Meio Dia)
   AMD_second        String
   comments          String
+  week_days         String
+  collectUser_id    String?
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
   CollectPoint      CollectPoint[]
+  CollectUser       CollectUser? @relation(fields: [collectUser_id], references: [id])
+
 }
 
 model TwoFactors{

@@ -56,6 +56,41 @@ export default class UsersModel
         }
     }
 
+    public async getDataById(user_id: string) : Promise<false | object>
+    {
+        try
+        {
+            const getData = await database.users.findMany({
+                where:{
+                    id: user_id
+                },
+                select:
+                {
+                    id: true,
+                    name: true,
+                    email: true,
+                    created_at: true,
+                    updated_at: true,
+                    collectUser_id: true
+                }
+            });
+
+            if(getData.length > 0)
+            {
+                return getData;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch(err)
+        {
+            console.error(err);
+            return false;
+        }
+    }
+
     protected async updateCollectUser(collectUser_id: string, user_id: string)
     {
         try
