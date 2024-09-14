@@ -121,7 +121,7 @@ export default class WorkHoursModel
         {
             const filtredData = Object.fromEntries(
                 Object.entries(data).filter(
-                    ([name, value]) => value !== null && value !== false
+                    ([name, value]) => value !== null && value !== false && typeof value !== "undefined"
                 )
             )
             const update :any = await database.workHours.update({
