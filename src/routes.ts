@@ -4,10 +4,12 @@ import UsersController from "./Controllers/UsersController";
 import SessionsController from "./Controllers/SessionsController";
 import CollectUserController from "./Controllers/CollectUserController";
 import WorkHoursController from "./Controllers/WorkHoursController";
+import CollectPointController from "./Controllers/CollectPointController";
 const workHoursController = new WorkHoursController();
 const collectUserController = new CollectUserController();
 const usersController = new UsersController();
 const sessionController = new SessionsController();
+const collectPointController = new CollectPointController();
 
 export const routes = Router();
 
@@ -529,4 +531,22 @@ routes.delete("/work_hours/deleteById", AuthMiddeware.Authentication(true), (req
 
 routes.put("/work_hours/updateById", AuthMiddeware.Authentication(true), (req, res) => {
     workHoursController.updateWorkHoursById(req, res);
+});
+
+
+//COLLECT_POINTS
+routes.post("/collect_points/insert", AuthMiddeware.Authentication(true), (req, res) => {
+    collectPointController.createCollectPoint(req, res);
+})
+
+routes.delete("/collect_points/deleteById", AuthMiddeware.Authentication(true), (req, res) => {
+    collectPointController.dropById(req, res);
+})
+
+routes.get("/collect_points/getAllById", AuthMiddeware.Authentication(true), (req, res) => {
+    collectPointController.getAllByCollectUser(req, res);
+});
+
+routes.get("/collect_points/getall", AuthMiddeware.Authentication(true), (req, res) => {
+    collectPointController.getAllCollectPoints(req, res);
 });

@@ -1,7 +1,6 @@
 import CollectPoint from "../@Types/CollectPoint";
 import { database } from "../Database/Connection";
 import collectPoint from "../Dtos/CollectPoint";
-import CollectUser from "../Dtos/CollectUser";
 import Users from "../Dtos/User";
 
 export default class CollectPointModel
@@ -50,7 +49,7 @@ export default class CollectPointModel
         }
     }
 
-    protected async getall(id_collect_user : string) : Promise<object | false>
+    protected async getAllByCollectUserId(id_collect_user : string) : Promise<object | false>
     {
         try
         {
@@ -87,18 +86,20 @@ export default class CollectPointModel
         }
     }
 
-    protected async delete(id_collect_point : string, id_collect_user : string) : Promise<object | false>
+    protected async deleteCollectPointById(id_collect_point : string, id_collect_user : string) : Promise<object | false>
     {
         try
         {
-            const drop= await database.collectPoint.delete({
+            const drop= await database.collectPoint.deleteMany({
                 where:{
                     id: id_collect_point,
                     collectUser_id: id_collect_user
                 }
             });
-
-            if(drop)
+            console.log(drop);
+            console.log("PONTO DE COLETA => "+id_collect_point);
+            console.log("USUÁRIO DE COLETA => "+id_collect_user);
+            if(drop.count > 0)
             {
                 return drop;
             }
@@ -114,7 +115,7 @@ export default class CollectPointModel
         }
     }
 
-    protected async update(id_collect_point : string, data: CollectUser)
+    protected async updateOneById(id_collect_point : string, data: collectPoint)
     {
         try
         {
@@ -124,10 +125,64 @@ export default class CollectPointModel
                 )
             )
 
+            const update : any = await database.collectPoint.update({
+                where: {
+                    id: id_collect_point
+                },
+                data: filtredData
+            })
+
+            if(typeof update === "object")
+            {
+                return update;
+            }
+            else
+            {
+                return false;
+            }
         }
         catch(err)
         {
             console.log(err);
+            return false;
+        }
+    }
+
+    public async getOneById(id: string)
+    {
+        try
+        {
+            const get : any = await database.collectPoint.findUnique({
+                where: {
+                    id
+                }
+            });
+
+            return get;
+        }
+        catch(err)
+        {
+            console.log(err);
+            return false;
+        }
+    }
+
+    protected async getAll() : Promise<object | false>
+    {
+        try
+        {
+            const getall = await database.collectPoint.findMany();
+
+            if(getall.length <= 0)
+            {
+                return false
+            }
+
+            return getall;
+        }
+        catch(err)
+        {
+            console.error(err);
             return false;
         }
     }

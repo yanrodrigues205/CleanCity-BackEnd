@@ -43,6 +43,8 @@ model CollectPoint{
   id                String @id  @default(uuid())
   name              String
   description       String
+  latitude          String
+  longitude         String
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
   WorkHours         WorkHours? @relation(fields: [workHours_id], references: [id])
@@ -54,7 +56,7 @@ model CollectPoint{
 
 model Sessions{
   id                String @id  @default(uuid())
-  token             String
+  token             String @db.VarChar(300)
   expiry            DateTime
   TwoFactors        TwoFactors? @relation(fields: [twofactors_id], references: [id])
   twofactors_id     String?
