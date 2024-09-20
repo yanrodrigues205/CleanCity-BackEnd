@@ -31,7 +31,7 @@ export default class UsersModel
     }
 
 
-    protected async insert(user: Users): Promise<boolean>
+    protected async insert(user: Users): Promise< | Object>
     {
         try
         {
@@ -41,11 +41,20 @@ export default class UsersModel
                     name: user.name,
                     email: user.email,
                     password: cryptPass
+                },
+                select:{
+                    id: true,
+                    name: true,
+                    email: true,
+                    password: true,
+                    collectUser_id: true,
+                    created_at: true,
+                    updated_at: true
                 }
             });
 
             if(create_user)
-                return true;
+                return create_user;
             else
                 return false;
         }
