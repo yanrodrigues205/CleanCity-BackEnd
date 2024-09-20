@@ -88,25 +88,17 @@ export default class WorkHoursModel
         }
     }
 
-    protected async getOneByID(id_work_hours: string, id_collect_user: string) : Promise<object | false>
+    public async getOneByID(id_work_hours: string, id_collect_user: string) : Promise<object | null | false>
     {
         try
         {
-            const data = await database.workHours.findMany({
+            const data = await database.workHours.findUnique({
                 where: {
                     id: id_work_hours,
                     collectUser_id: id_collect_user
                 }
             });
-
-            if(data.length < 0)
-            {
-                return data;
-            }
-            else
-            {
-                return false;
-            }
+           return data;
         }
         catch(err)
         {
