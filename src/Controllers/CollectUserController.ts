@@ -34,7 +34,7 @@ export default class CollectUserController extends CollectUserModel
             });
         }
 
-        if(local.phone.length != 11 && local.phone.length != 10)
+        if(local.phone.length != 15)
         {
             return  res.status(400).json({
                 message: "Digite o telefone correto para contato!",
