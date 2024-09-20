@@ -15,9 +15,23 @@ export default class WorkHoursController extends WorkHoursModel
 
     public async createWorkHours(req: any, res: any)
     {
-        const {BMD_first, BMD_second, AMD_first, AMD_second, comments, week_days, id_collect_user } = req.body;
+        const {BMD_first, BMD_second, AMD_first, AMD_second, comments, week_days } = req.body;
 
-        if(!BMD_first || !BMD_second || !comments || !AMD_first || !AMD_second || !week_days || !id_collect_user)
+        let id_collect_user = "";
+
+        const getUser : any = await this._userModel.getDataById(req.userId);
+
+        if(!getUser[0].collectUser_id || !req.userId)
+        {
+            return  res.status(403).json({
+                message: "Para acessar está página é necessário o cadastro completo do usuário de coleta.",
+                status: 403
+            });
+        }
+
+        id_collect_user = getUser[0].collectUser_id;
+
+        if(!BMD_first || !BMD_second || !comments || !AMD_first || !AMD_second || !week_days )
         {
             return  res.status(400).json({
                         message: "Preencha todos os campos para cadastrar um horário de trabalho",
@@ -76,7 +90,7 @@ export default class WorkHoursController extends WorkHoursModel
 
         const getUser : any = await this._userModel.getDataById(req.userId);
 
-        if(!getUser.collectUser_id)
+        if(!getUser.collectUser_id || !req.userId)
         {
             
             return  res.status(403).json({
