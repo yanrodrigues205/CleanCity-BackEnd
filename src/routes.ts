@@ -525,6 +525,10 @@ routes.get("/work_hours/getall", AuthMiddeware.Authentication(true), (req, res) 
     workHoursController.getAllWorkHours(req, res);
 });
 
+routes.post("/work_hours/getOneById", AuthMiddeware.Authentication(true), (req, res) => {
+    workHoursController.getWorkHoursByID(req, res);
+})
+
 routes.delete("/work_hours/deleteById", AuthMiddeware.Authentication(true), (req, res) => {
     workHoursController.dropWorkHoursById(req, res);
 });

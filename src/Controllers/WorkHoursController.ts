@@ -90,7 +90,7 @@ export default class WorkHoursController extends WorkHoursModel
 
         const getUser : any = await this._userModel.getDataById(req.userId);
 
-        if(!getUser.collectUser_id || !req.userId)
+        if(!getUser[0].collectUser_id || !req.userId)
         {
             
             return  res.status(403).json({
@@ -187,6 +187,44 @@ export default class WorkHoursController extends WorkHoursModel
             status: 202,
             updated: update
         })
+    }
+
+    public async getWorkHoursByID(req:any, res:any)
+    {
+        const { id } = req.body;
+
+        if(!id)
+        {
+            return res.status(400).json({
+                message: "",
+                status: 400
+            })
+        }
+
+        const getUser : any = await this._userModel.getDataById(req.userId);
+        
+        if(!getUser[0].collectUser_id)
+        {
+            return res.status(401).json({
+                message: "Para acessar este ambiente é necessário possuir um usuário de coleta.",
+                status: 401
+            });
+        }
+
+
+
+
+        const getone : any = await super.getOneByID(id, getUser[0].collectUser_id);
+
+        if(!getone)
+        {
+            return res.status(401).json({
+                message: "Para acessar este ambiente é necessário possuir um usuário de coleta.",
+                status: 401
+            });
+        }
+
+        return res.status(202).json(getone);
     }
 }
 
