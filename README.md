@@ -112,14 +112,6 @@ Special thank you for all people that contributed for this project.
         </sub>
       </a>
     </td>
-    <td align="center">
-      <a href="#">
-        <img src="https://avatars.githubusercontent.com/u/101331964?v=4" width="100px;" alt="Matheus Marchioli Picture"/><br>
-        <sub>
-          <b>MATHEUS MARCHIOLI</b>
-        </sub>
-      </a>
-    </td>
   </tr>
 </table>
 
