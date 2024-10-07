@@ -9,7 +9,7 @@ export default class UsersController extends UsersModel
         super();
     }
 
-    public async createUser(req: any, res: any)
+    public async createUser(req: any, res: any, internal_use = false)
     {
         const data: Users = req.body;
 
@@ -102,7 +102,7 @@ export default class UsersController extends UsersModel
             return false;
     }
 
-    public async getUserByID(req: any, res: any)
+    public async getUserByID(req: any, res: any, internal_use : boolean = false)
     {
         
         const data = req.body;
@@ -127,7 +127,11 @@ export default class UsersController extends UsersModel
         }
         else
         {
-            return res.status(202).json(getUser);
+            if(!internal_use)
+                return res.status(202).json(getUser);
+            else
+                return getUser;
+
         }
     }
 }
