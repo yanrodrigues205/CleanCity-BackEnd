@@ -36,6 +36,7 @@ model CollectUser{
   users             Users[]
   collectPoint      CollectPoint[]
   workHours         WorkHours[]
+  wastes            Wastes[]
 }
 
 
@@ -49,6 +50,7 @@ model CollectPoint{
   updated_at        DateTime @updatedAt
   WorkHours         WorkHours? @relation(fields: [workHours_id], references: [id])
   CollectUser       CollectUser? @relation(fields: [collectUser_id], references: [id])
+  collectPoints_Wastes      CollectPoints_Wastes[]
   collectUser_id    String?
   workHours_id      String?
 }
@@ -81,7 +83,7 @@ model WorkHours{
 }
 
 model TwoFactors{
-  id            String @id  @default(uuid())
+  id                String @id  @default(uuid())
   Users             Users? @relation(fields: [user_id], references: [id])
   user_id           String?
   OPT               String    //One-Time Password
@@ -90,4 +92,50 @@ model TwoFactors{
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
   Sessions          Sessions[]
+}
+
+
+model CollectPoints_Wastes{
+  id                String @id @default(uuid())
+  CollectPoint      CollectPoint? @relation(fields: [collectPoint_id], references: [id])
+  collectPoint_id   String?
+  Wastes            Wastes? @relation(fields: [waste_id], references: [id])
+  waste_id          String?
+  created_at        DateTime @default(now())
+  disabled_at       DateTime
+  updated_at        DateTime @updatedAt
+}
+
+enum WasteClassificationTypes {
+  High                @map("Alto")
+  Avarage             @map("Médio")
+  Low                 @map("Baixo")
+  No_degree_of_danger @map("Sem grau de Periculosidade")
+}
+
+enum UnitOfMeasureTypes {
+  Kilogram            @map("Quilograma")
+  Gram                @map("Grama")
+  Ton                 @map("Tonelada")
+  Liter               @map("Litro")
+  Mililiter           @map("Mililitro")
+  Unit                @map("Unidade")
+  Pack                @map("Pacote")
+  Barrel              @map("Barril")
+  SquareMeter         @map("Metro Quadrado")
+}
+
+model Wastes{
+  id                String @id @default(uuid())
+  type              String
+  description       String
+  classification    WasteClassificationTypes
+  unit_of_measure   UnitOfMeasureTypes
+  value             String
+  created_at        DateTime @default(now())
+  disabled_at       DateTime?
+  updated_at        DateTime @updatedAt
+  collectPoints_Wastes     CollectPoints_Wastes[]
+  CollectUser       CollectUser? @relation(fields: [collectUser_id], references: [id])
+  collectUser_id    String?
 }

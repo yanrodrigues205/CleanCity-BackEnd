@@ -5,11 +5,13 @@ import SessionsController from "./Controllers/SessionsController";
 import CollectUserController from "./Controllers/CollectUserController";
 import WorkHoursController from "./Controllers/WorkHoursController";
 import CollectPointController from "./Controllers/CollectPointController";
+import WastesController from "./Controllers/WastesController";
 const workHoursController = new WorkHoursController();
 const collectUserController = new CollectUserController();
 const usersController = new UsersController();
 const sessionController = new SessionsController();
 const collectPointController = new CollectPointController();
+const wastesController = new WastesController();
 
 export const routes = Router();
 
@@ -554,3 +556,24 @@ routes.get("/collect_points/getAllById", AuthMiddeware.Authentication(true), (re
 routes.get("/collect_points/getall", AuthMiddeware.Authentication(true), (req, res) => {
     collectPointController.getAllCollectPoints(req, res);
 });
+
+//WASTES
+routes.post("/wastes/insert", AuthMiddeware.Authentication(true), (req, res) => {
+    wastesController.createWaste(req , res);
+});
+
+routes.put("/wastes/disabledById", AuthMiddeware.Authentication(true), (req, res) => {
+    wastesController.disabledWasteById(req, res);
+})
+
+routes.put("/wastes/updateById", AuthMiddeware.Authentication(true), (req, res) => {
+    wastesController.updateWasteById(req, res);
+})
+
+routes.get("/wastes/getall", AuthMiddeware.Authentication(true), (req, res) => {
+    wastesController.getAllWastes(req, res);
+})
+
+routes.post("/wastes/getOneById", AuthMiddeware.Authentication(true), (req, res) => {
+    wastesController.getWalesById(req, res);
+})
