@@ -262,7 +262,7 @@ export default class WastesController extends WastesModel
         if(!waste_id)
         {
             return res.status(400).json({
-                message: "Para alterar um resíduo é necessário informar sua identificação.",
+                message: "Para pegar um resíduo é necessário informar sua identificação.",
                 status: 400
             })
         }
