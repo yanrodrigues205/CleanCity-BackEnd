@@ -1,7 +1,5 @@
-import CollectPoint from "../@Types/CollectPoint";
 import { database } from "../Database/Connection";
 import collectPoint from "../Dtos/CollectPoint";
-import Users from "../Dtos/User";
 
 export default class CollectPointModel
 {
@@ -11,11 +9,11 @@ export default class CollectPointModel
     }
 
 
-    protected async insert(collectPoint: collectPoint) : Promise<boolean | Users>
+    protected async insert(collectPoint: collectPoint) : Promise<boolean | object>
     {
         try
         {
-            const insert : CollectPoint | any = await database.collectPoint.create({
+            const insert : any = await database.collectPoint.create({
                 data:{
                     name: collectPoint.name,
                     description: collectPoint.description,
@@ -28,10 +26,10 @@ export default class CollectPointModel
                     id: true,
                     name: true,
                     description: true,
+                    workHours_id: true,
+                    collectUser_id: true,
                     latitude: true,
                     longitude: true,
-                    collectUser_id: true,
-                    workHours_id: true,
                     created_at: true,
                     updated_at: true
                 }
