@@ -23,6 +23,7 @@ model Users{
   CollectUser       CollectUser? @relation(fields: [collectUser_id], references: [id])
   collectUser_id    String?
   TwoFactors        TwoFactors[]
+  Reviews           Reviews[]
 }
 
 model CollectUser{
@@ -48,9 +49,16 @@ model CollectPoint{
   longitude         String
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
+  disabled_at       DateTime?
+  street            String
+  city              String
+  state             String
+  country           String
+  address_number    String
   WorkHours         WorkHours? @relation(fields: [workHours_id], references: [id])
   CollectUser       CollectUser? @relation(fields: [collectUser_id], references: [id])
   collectPoints_Wastes      CollectPoints_Wastes[]
+  reviews           Reviews[]
   collectUser_id    String?
   workHours_id      String?
 }
@@ -138,4 +146,18 @@ model Wastes{
   collectPoints_Wastes     CollectPoints_Wastes[]
   CollectUser       CollectUser? @relation(fields: [collectUser_id], references: [id])
   collectUser_id    String?
+}
+
+
+model Reviews{
+  id                String @id @default(uuid())
+  stars             Float
+  comments          String @db.Text
+  user_id           String?
+  Users             Users? @relation(fields: [user_id], references: [id])
+  collectPoint_id   String?
+  CollectPoint      CollectPoint? @relation(fields: [collectPoint_id], references: [id])
+  created_at        DateTime @default(now())
+  disabled_at       DateTime?
+  updated_at        DateTime @updatedAt
 }

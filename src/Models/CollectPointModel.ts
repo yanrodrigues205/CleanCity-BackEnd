@@ -11,18 +11,24 @@ export default class CollectPointModel
     }
 
 
-    protected async insert(collectPoint: collectPoint) : Promise<boolean | Users>
+    protected async insert(collectPoint: collectPoint, collect_user_id: string) : Promise<boolean | object>
     {
         try
         {
-            const insert : CollectPoint | any = await database.collectPoint.create({
+            const insert = await database.collectPoint.create({
                 data:{
                     name: collectPoint.name,
                     description: collectPoint.description,
                     latitude: collectPoint.latitude,
                     longitude: collectPoint.longitude,
-                    collectUser_id: collectPoint.collectUser_id,
-                    workHours_id: collectPoint.workHours_id
+                    collectUser_id: collect_user_id,
+                    workHours_id: collectPoint.workHours_id,
+                    address_number: collectPoint.address_number,
+                    street: collectPoint.street,
+                    city: collectPoint.city,
+                    state: collectPoint.state,
+                    country: collectPoint.country,
+                    disabled_at: null
                 },
                 select:{
                     id: true,
@@ -30,9 +36,15 @@ export default class CollectPointModel
                     description: true,
                     latitude: true,
                     longitude: true,
+                    address_number: true,
+                    street: true,
+                    city: true,
+                    state: true,
+                    country: true,
                     collectUser_id: true,
                     workHours_id: true,
                     created_at: true,
+                    disabled_at: true,
                     updated_at: true
                 }
             });
@@ -55,7 +67,10 @@ export default class CollectPointModel
         {
             const get : any = await database.collectPoint.findMany({
                 where:{
-                    id: id_collect_user
+                    id: id_collect_user,
+                    disabled_at:{
+                        not: null
+                    }
                 },
                 select:{
                     id: true,
@@ -64,8 +79,14 @@ export default class CollectPointModel
                     latitude: true,
                     longitude: true,
                     collectUser_id: true,
+                    address_number: true,
+                    street: true,
+                    city: true,
+                    state: true,
+                    country: true,
                     workHours_id: true,
                     created_at: true,
+                    disabled_at: true,
                     updated_at: true
                 }
             });
@@ -115,7 +136,7 @@ export default class CollectPointModel
         }
     }
 
-    protected async updateOneById(id_collect_point : string, data: collectPoint)
+    protected async updateOneById(id_collect_point : string, data: collectPoint, id_collect_user: string)
     {
         try
         {
@@ -127,7 +148,10 @@ export default class CollectPointModel
 
             const update : any = await database.collectPoint.update({
                 where: {
-                    id: id_collect_point
+                    id: id_collect_point,
+                    disabled_at:{
+                        not: null
+                    }
                 },
                 data: filtredData
             })
@@ -148,17 +172,18 @@ export default class CollectPointModel
         }
     }
 
-    public async getOneById(id: string)
+    protected async getOneById(id: string, collect_user_id: string )
     {
         try
         {
-            const get : any = await database.collectPoint.findUnique({
+            const get : any = await database.collectPoint.findMany({
                 where: {
-                    id
+                    id,
+                    collectUser_id: collect_user_id
                 }
             });
 
-            return get;
+            return get[0];
         }
         catch(err)
         {

@@ -18,14 +18,14 @@ export default class CollectPointController extends CollectPointModel
 
     public async createCollectPoint(req : any, res : any)
     {
-        const { name, description, latitude, longitude, id_work_hours } = req.body;
+        const { name, description, latitude, longitude, id_work_hours, address_number, street, city, state, country } = req.body;
 
         const user_id : string = req.userId;
 
-        if(!name || !description || !latitude || !longitude || !id_work_hours)
+        if(!name || !description || !latitude || !longitude || !id_work_hours || !address_number || !street || !city || !state || !country)
         {
             return res.status(400).json({
-                message: "",
+                message: "Preencha todos os campos necessários para cadastrar um ponto de coleta!",
                 status: 400
             });
         }
@@ -52,16 +52,21 @@ export default class CollectPointController extends CollectPointModel
             });
         }
 
-        let data : collectPoint = {
+        let data = {
             name,
             description,
             latitude,
             longitude,
-            collectUser_id: getUser[0].collectUser_id,
-            workHours_id: id_work_hours
+            workHours_id: id_work_hours,
+            street,
+            address_number,
+            city,
+            state,
+            country,
+            disabled_at: null
         }
 
-        const insert = await super.insert(data)
+        const insert = await super.insert(data, getUser[0].collectUser_id);
 
         if(!insert)
         {
@@ -79,7 +84,7 @@ export default class CollectPointController extends CollectPointModel
 
     public async updateById(req : any, res : any)
     {
-        const { id, name, description, latitude, longitude, id_work_hours } = req.body;
+        const { id, name, description, latitude, longitude, id_work_hours,  address_number, street, city, state, country} = req.body;
 
         const getUser : any = await this._userModel.getDataById(req.userId);
 
@@ -92,7 +97,7 @@ export default class CollectPointController extends CollectPointModel
         }
 
 
-        if(!id || !name || !description || !latitude || !longitude || !id_work_hours)
+        if(!name && !description && !latitude && !longitude && !id_work_hours && !address_number && !street && !city && !state && !country)
         {
             return res.status(401).json({
                 message: "Para alterar o ponto de coleta é necessário modificar ao menos um campo.",
@@ -111,16 +116,20 @@ export default class CollectPointController extends CollectPointModel
         }
 
 
-        let data : collectPoint ={
+        let data ={
             name,
             description,
             latitude,
             longitude,
             workHours_id: getWorkHour[0].id,
-            collectUser_id: getUser[0].collectUser_id
+            street,
+            city,
+            state,
+            country,
+            address_number
         }
 
-        const update : CollectPoint | false = await super.updateOneById(id, data);
+            const update : CollectPoint | false = await super.updateOneById(id, data, getUser[0].collectUser_id);
 
         if(!update)
         {
@@ -149,16 +158,6 @@ export default class CollectPointController extends CollectPointModel
             });
         }
 
-        const getCollectPoint : any = await super.getOneById(id);
-
-        if(!getCollectPoint)
-        {
-            return res.status(401).json({
-                message: "Não foi possível encontrar esse ponto de coleta.",
-                status: 401
-            });
-        }
-
         const getUser : any = await this._userModel.getDataById(req.userId);
 
         if(!getUser[0].collectUser_id)
@@ -168,6 +167,19 @@ export default class CollectPointController extends CollectPointModel
                 status: 401
             });
         }
+
+
+        const getCollectPoint : any = await super.getOneById(id, getUser[0].collectUser_id);
+
+        if(!getCollectPoint)
+        {
+            return res.status(401).json({
+                message: "Não foi possível encontrar esse ponto de coleta.",
+                status: 401
+            });
+        }
+
+        
 
         const deleted = await super.deleteCollectPointById(id, getUser[0].collectUser_id);
 

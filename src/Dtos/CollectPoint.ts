@@ -3,7 +3,11 @@ interface collectPoint{
     readonly description: string;
     readonly latitude: string;
     readonly longitude: string;
-    readonly collectUser_id: string;
+    readonly address_number:string;
+    readonly street:string;
+    readonly city:string;
+    readonly country:string;
+    readonly state:string;
     readonly workHours_id: string;
 }
 
