@@ -244,7 +244,7 @@ export default class WastesController extends WastesModel
 
         const getall : any = await super.getAllByCollectUser(collectUser_id);
 
-        if(getall.length <= 0)
+        if(!getall || getall.length <= 0)
         {
             return  res.status(402).json({
                 message: "Não foi encontrado nenhum resíduo ativo.",
@@ -262,7 +262,7 @@ export default class WastesController extends WastesModel
         if(!waste_id)
         {
             return res.status(400).json({
-                message: "Para alterar um resíduo é necessário informar sua identificação.",
+                message: "Para pegar um resíduo é necessário informar sua identificação.",
                 status: 400
             })
         }

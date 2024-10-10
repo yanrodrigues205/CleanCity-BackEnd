@@ -1,7 +1,5 @@
-import CollectPoint from "../@Types/CollectPoint";
 import { database } from "../Database/Connection";
 import collectPoint from "../Dtos/CollectPoint";
-import Users from "../Dtos/User";
 
 export default class CollectPointModel
 {
@@ -11,7 +9,7 @@ export default class CollectPointModel
     }
 
 
-    protected async insert(collectPoint: collectPoint, collect_user_id: string) : Promise<boolean | object>
+    protected async insert(collectPoint: collectPoint, collect_user_id: string ) : Promise<boolean | object>
     {
         try
         {
@@ -36,12 +34,12 @@ export default class CollectPointModel
                     description: true,
                     latitude: true,
                     longitude: true,
+                    collectUser_id: true,
                     address_number: true,
                     street: true,
                     city: true,
                     state: true,
                     country: true,
-                    collectUser_id: true,
                     workHours_id: true,
                     created_at: true,
                     disabled_at: true,
