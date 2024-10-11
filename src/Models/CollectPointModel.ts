@@ -65,10 +65,8 @@ export default class CollectPointModel
         {
             const get : any = await database.collectPoint.findMany({
                 where:{
-                    id: id_collect_user,
-                    disabled_at:{
-                        not: null
-                    }
+                    collectUser_id: id_collect_user,
+                    disabled_at: null
                 },
                 select:{
                     id: true,
@@ -89,7 +87,7 @@ export default class CollectPointModel
                 }
             });
 
-            if(get.length > 0)
+            if(get && get.length > 0)
             {
                 return get;
             }
@@ -147,9 +145,8 @@ export default class CollectPointModel
             const update : any = await database.collectPoint.update({
                 where: {
                     id: id_collect_point,
-                    disabled_at:{
-                        not: null
-                    }
+                    collectUser_id: id_collect_user,
+                    disabled_at: null
                 },
                 data: filtredData
             })
