@@ -44,6 +44,18 @@ export default class WorkHoursModel
             const response = await database.workHours.findMany({
                 where:{
                     collectUser_id: id_collect_user
+                },
+                select: {
+                    id: true,
+                    AMD_first:true,
+                    AMD_second: true,
+                    BMD_first: true,
+                    BMD_second: true,
+                    comments: true,
+                    week_days: true,
+                    collectUser_id: false,
+                    created_at: false,
+                    updated_at: false
                 }
             });
             if(response.length > 0)
@@ -94,8 +106,7 @@ export default class WorkHoursModel
         {
             const data = await database.workHours.findUnique({
                 where: {
-                    id: id_work_hours,
-                    collectUser_id: id_collect_user
+                    id: id_work_hours
                 }
             });
            return data;

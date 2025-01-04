@@ -6,12 +6,14 @@ import CollectUserController from "./Controllers/CollectUserController";
 import WorkHoursController from "./Controllers/WorkHoursController";
 import CollectPointController from "./Controllers/CollectPointController";
 import WastesController from "./Controllers/WastesController";
+import WastesCollectPointController from "./Controllers/WastesCollectPointController";
 const workHoursController = new WorkHoursController();
 const collectUserController = new CollectUserController();
 const usersController = new UsersController();
 const sessionController = new SessionsController();
 const collectPointController = new CollectPointController();
 const wastesController = new WastesController();
+const wastesCollectPointController = new WastesCollectPointController();
 
 export const routes = Router();
 
@@ -512,7 +514,7 @@ routes.post("/collect_user/insert",AuthMiddeware.Authentication(false), (req, re
     collectUserController.createCollectUser(req, res);
 });
 
-routes.post("/collect_user/getCollectUserById", AuthMiddeware.Authentication(false), (req, res) => { 
+routes.post("/collect_user/getCollectUserById", (req, res) => { 
     collectUserController.getCollectUserById(req, res) 
 });
 
@@ -527,7 +529,7 @@ routes.get("/work_hours/getall", AuthMiddeware.Authentication(true), (req, res) 
     workHoursController.getAllWorkHours(req, res);
 });
 
-routes.post("/work_hours/getOneById", AuthMiddeware.Authentication(true), (req, res) => {
+routes.post("/work_hours/getOneById", (req, res) => {
     workHoursController.getWorkHoursByID(req, res);
 })
 
@@ -549,13 +551,21 @@ routes.delete("/collect_points/deleteById", AuthMiddeware.Authentication(true), 
     collectPointController.dropById(req, res);
 })
 
+routes.put("/collect_points/updateById", AuthMiddeware.Authentication(true), (req, res) => {
+    collectPointController.updateById(req, res);
+})
+
 routes.get("/collect_points/getAllById", AuthMiddeware.Authentication(true), (req, res) => {
     collectPointController.getAllByCollectUser(req, res);
 });
 
-routes.get("/collect_points/getall", AuthMiddeware.Authentication(true), (req, res) => {
+routes.get("/collect_points/getall", (req, res) => {
     collectPointController.getAllCollectPoints(req, res);
 });
+
+routes.post("/collect_points/getOneById", AuthMiddeware.Authentication(true), (req, res) => {
+    collectPointController.getOneByIdAndCollectUser(req, res);
+})
 
 //WASTES
 routes.post("/wastes/insert", AuthMiddeware.Authentication(true), (req, res) => {
@@ -574,6 +584,20 @@ routes.get("/wastes/getall", AuthMiddeware.Authentication(true), (req, res) => {
     wastesController.getAllWastes(req, res);
 })
 
-routes.post("/wastes/getOneById", AuthMiddeware.Authentication(true), (req, res) => {
+routes.post("/wastes/getOneById", (req, res) => {
     wastesController.getWalesById(req, res);
 })
+
+
+//WASTES_COLLECT_POINTS
+routes.post("/wastes_collect/insert", AuthMiddeware.Authentication(true), (req, res) => {
+    wastesCollectPointController.createWasteCollectUser(req, res);
+});
+
+routes.post("/wastes_collect/getall", (req, res) => {
+    wastesCollectPointController.getAll(req, res);
+});
+
+routes.delete("/wastes_collect/dropById", AuthMiddeware.Authentication(true), (req, res) => {
+    wastesCollectPointController.dropById(req, res);
+});

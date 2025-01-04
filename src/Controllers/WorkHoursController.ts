@@ -100,7 +100,7 @@ export default class WorkHoursController extends WorkHoursModel
         }
 
  
-        const getall : any = await super.getAllByCollectUserID(getUser.collectUser_id);
+        const getall : any = await super.getAllByCollectUserID(getUser[0].collectUser_id);
 
         if(getall.length <= 0)
         {
@@ -201,20 +201,19 @@ export default class WorkHoursController extends WorkHoursModel
             })
         }
 
-        const getUser : any = await this._userModel.getDataById(req.userId);
-        
-        if(!getUser[0].collectUser_id)
-        {
-            return res.status(401).json({
-                message: "Para acessar este ambiente é necessário possuir um usuário de coleta.",
-                status: 401
-            });
-        }
 
+        // const getUser : any = await this._userModel.getDataById(req.userId);
 
-
-
-        const getone : any = await super.getOneByID(id, getUser[0].collectUser_id);
+        // if(!getUser[0].collectUser_id || !req.userId)
+        // {
+            
+        //     return  res.status(403).json({
+        //         message: "Para acessar está página é necessário o cadastro completo do usuário de coleta.",
+        //         status: 403
+        //     });
+        // }
+        let collect_user_id = "";
+        const getone : any = await super.getOneByID(id, collect_user_id);
 
         if(!getone)
         {

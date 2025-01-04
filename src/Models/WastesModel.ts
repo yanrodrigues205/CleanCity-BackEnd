@@ -41,14 +41,13 @@ export default class WastesModel
         }
     }
 
-    protected async getDataById(waste_id: string, collect_user_id : string) : Promise<false | object>
+    protected async getDataById(waste_id: string) : Promise<false | object>
     {
         try
         {
             const getData = await database.wastes.findMany({
                 where: {
                     id: waste_id,
-                    collectUser_id: collect_user_id,
                     disabled_at: null
                 },
                 select:{
@@ -153,6 +152,18 @@ export default class WastesModel
                 where: {
                     collectUser_id: id_collect_user,
                     disabled_at: null
+                },
+                select: {
+                    id: true,
+                    type: true,
+                    description: true,
+                    classification: true,
+                    unit_of_measure: true,
+                    value: true,
+                    created_at: false,
+                    updated_at: false,
+                    disabled_at: false,
+                    collectUser_id: false
                 }
             })
 

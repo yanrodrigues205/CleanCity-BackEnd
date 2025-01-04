@@ -50,7 +50,7 @@ export default class CollectPointModel
             if(insert)
                 return insert;
             else
-                return false
+                return false;
         }
         catch(err)
         {
@@ -74,16 +74,16 @@ export default class CollectPointModel
                     description: true,
                     latitude: true,
                     longitude: true,
-                    collectUser_id: true,
+                    collectUser_id: false,
                     address_number: true,
                     street: true,
                     city: true,
                     state: true,
                     country: true,
-                    workHours_id: true,
-                    created_at: true,
-                    disabled_at: true,
-                    updated_at: true
+                    workHours_id: false,
+                    created_at: false,
+                    disabled_at: false,
+                    updated_at: false
                 }
             });
 

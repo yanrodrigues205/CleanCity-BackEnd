@@ -25,13 +25,40 @@ export default class SessionsModel extends TwoFactorsModel
         }
     }
 
-    protected async twoFactors_verifyCode(id: string, OTP_receiver: string) : Promise<Boolean>
+    protected async twoFactors_verifyCode(id: string, OTP_receiver: string) : Promise<Boolean | string>
     {
         const verifyOTP = await super.verify(id, OTP_receiver);
 
         if(verifyOTP)
         {
-            return true;
+            const getUser : any = await database.users.findUnique({
+                where:{
+                    id: verifyOTP
+                },
+                select:{
+                    collectUser_id: true
+                }
+            });
+            
+            if(!getUser)
+            {
+                console.log("não achou usuário");
+                return false;
+            }
+            else
+            {
+                console.log("achou usuário");
+                if(!getUser.collectUser_id)
+                {
+                    return true;
+                }
+                else if(getUser.collectUser_id.length >= 6)
+                {   
+                    return getUser.collectUser_id
+                }
+                
+                return false;
+            }
         }
         else
         {

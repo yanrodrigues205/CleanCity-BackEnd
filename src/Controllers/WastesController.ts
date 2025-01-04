@@ -135,7 +135,7 @@ export default class WastesController extends WastesModel
         const getUser : any = await this._usersController.getUserByID(req, res, true);
         if(!getUser[0].collectUser_id || !req.userId)
         {
-            return  res.status(403).json({
+            return res.status(403).json({
                 message: "Para acessar está página é necessário o cadastro completo do usuário de coleta.",
                 status: 403
             });
@@ -267,21 +267,21 @@ export default class WastesController extends WastesModel
             })
         }
         req.body.id = req.userId;
-        const getUser : any = await this._usersController.getUserByID(req, res, true);
-        let collectUser_id = "";
-        if(!getUser[0].collectUser_id || !req.userId)
-        {
-            return  res.status(403).json({
-                message: "Para acessar está página é necessário o cadastro completo do usuário de coleta.",
-                status: 403
-            });
-        }
-        else
-        {
-            collectUser_id = getUser[0].collectUser_id;
-        }
+        // const getUser : any = await this._usersController.getUserByID(req, res, true);
+        // let collectUser_id = "";
+        // if(!getUser[0].collectUser_id || !req.userId)
+        // {
+        //     return  res.status(403).json({
+        //         message: "Para acessar está página é necessário o cadastro completo do usuário de coleta.",
+        //         status: 403
+        //     });
+        // }
+        // else
+        // {
+        //     collectUser_id = getUser[0].collectUser_id;
+        // }
 
-        const getone : any = await super.getDataById(waste_id, collectUser_id);
+        const getone : any = await super.getDataById(waste_id);
 
          if(!getone)
         {
@@ -291,6 +291,7 @@ export default class WastesController extends WastesModel
             });
         }
 
-        return res.status(202).json(getone);
+       res.status(202).json(getone);
+       return;
     }
 }

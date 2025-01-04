@@ -86,7 +86,8 @@ export default class CollectPointController extends CollectPointModel
     {
         const { id, name, description, latitude, longitude, id_work_hours,  address_number, street, city, state, country} = req.body;
 
-        const getUser : any = await this._userModel.getDataById(req.userId);
+        const user_id : string = req.userId;
+        const getUser : any = await this._userModel.getDataById(user_id);
 
         if(!getUser[0].collectPoint_id)
         {
@@ -105,7 +106,7 @@ export default class CollectPointController extends CollectPointModel
             });
         }
 
-        const getWorkHour : any = await this._workHoursModel.getOneByID(getUser[0].collectUser_id, id_work_hours);
+        const getWorkHour : any = await this._workHoursModel.getOneByID(id_work_hours, getUser[0].collectUser_id);
 
         if(!getWorkHour[0].id)
         {
@@ -244,6 +245,44 @@ export default class CollectPointController extends CollectPointModel
         }
 
         return res.status(202).json(getall);
+    }
+
+    public async getOneByIdAndCollectUser(req : any, res : any)
+    {
+        const { id_collect_point } = req.body;
+
+        if(!id_collect_point)
+        {
+            return res.status(400).json({
+                message: "Para pegar um ponto de coleta é necessário informar sua identificação.",
+                status: 400
+            })
+        }
+        const getUser : any = await this._userModel.getDataById(req.userId);
+        let collectUser_id = "";
+        if(!getUser[0].collectUser_id || !req.userId)
+        {
+            return  res.status(403).json({
+                message: "Para acessar está página é necessário o cadastro completo do usuário de coleta.",
+                status: 403
+            });
+        }
+        else
+        {
+            collectUser_id = getUser[0].collectUser_id;
+        }
+
+        const getone : any = await super.getOneById(id_collect_point, collectUser_id);
+
+         if(!getone)
+        {
+            return res.status(401).json({
+                message: "Não foi possível buscar o ponto de coleta de identificação => "+id_collect_point,
+                status: 401
+            });
+        }
+
+        return res.status(202).json(getone);
     }
 
 }

@@ -47,7 +47,7 @@ export default class TwoFactorsModel extends MailerService
         }
     }
 
-    protected async verify(id_receiver: string, OTP_receiver: string) : Promise<boolean>
+    protected async verify(id_receiver: string, OTP_receiver: string) : Promise<false | string>
     {
         try
         {
@@ -66,6 +66,8 @@ export default class TwoFactorsModel extends MailerService
 
             if(verify && verify.OPT == OTP_receiver && verify.expiry >= today)
             {
+                let id_us = verify.user_id;
+
                 const update = await database.twoFactors.update({
                     where:{
                         id: id_receiver
@@ -75,9 +77,9 @@ export default class TwoFactorsModel extends MailerService
                     }
                 });
 
-                if(update)
+                if(update && id_us)
                 {
-                    return true;
+                    return id_us;
                 }
                 else
                 {

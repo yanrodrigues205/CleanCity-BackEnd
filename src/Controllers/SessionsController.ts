@@ -110,7 +110,7 @@ export default class SessionsController extends SessionsModel
                     });
         }
 
-        const secondFactorVerify = await super.twoFactors_verifyCode(data.id, data.otp);
+        let secondFactorVerify = await super.twoFactors_verifyCode(data.id, data.otp);
 
         if(!secondFactorVerify)
         {
@@ -118,6 +118,11 @@ export default class SessionsController extends SessionsModel
                 message: "Indentificação de fatores inválida, tente novamente.",
                 status: 401
             });
+        }
+
+        if(secondFactorVerify == true)
+        {
+            secondFactorVerify = "";
         }
 
 
@@ -133,6 +138,7 @@ export default class SessionsController extends SessionsModel
 
         return  res.status(202).json({
             message: "Sessão iniciada com sucesso!",
+            collectUser_id: secondFactorVerify,
             token: insertSession,
             status: 202
         });
